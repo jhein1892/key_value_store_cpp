@@ -1,4 +1,3 @@
 Key1:NewVal1
 Key2:val2
-Key3:val3
 Key4:val4

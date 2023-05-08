@@ -25,9 +25,13 @@ class KeyPair {
             updateFile();
         }
 
+        // Delete Pair
         void deletePair(std::string keyName){
-            std::cout << "Delete" << std::endl;
+            updateMap();
+            map.erase(keyName);
+            updateFile();
         }
+        
     private:
         std::string filename;
         std::map<std::string, std::string> map;
@@ -78,4 +82,5 @@ int main()
 
     newKeyPair.addPair("Key4", "val4");
     newKeyPair.editPair("Key1", "NewVal1");
+    newKeyPair.deletePair("Key3");
 }
