@@ -13,23 +13,26 @@ class KeyPair {
 
         // Add new Pair value to the txt file
         void addPair(std::string keyName, std::string value) {
-            updateMap();
-            map.insert(std::pair<std::string, std::string>(keyName, value));
-            updateFile();
+            auto insert_function = [this, keyName, value]() {
+                return map.insert(std::pair<std::string, std::string>(keyName, value)).first;
+            };
+            my_decorator(insert_function);
         }
 
         // Edit Pair of values in txt file
         void editPair(std::string keyName, std::string newValue){
-            updateMap();
-            map[keyName] = newValue;
-            updateFile();
+            auto edit_function = [this, keyName, newValue](){
+                return map[keyName] = newValue;
+            }; 
+            my_decorator(edit_function);
         }
 
         // Delete Pair
         void deletePair(std::string keyName){
-            updateMap();
-            map.erase(keyName);
-            updateFile();
+            auto delete_function = [this, keyName]() {
+                return map.erase(keyName);
+            };
+            my_decorator(delete_function);
         }
         
     private:
@@ -69,6 +72,16 @@ class KeyPair {
             outFile.close();
         };
         
+        template <typename Func>
+        void my_decorator(Func f) {
+            auto new_f = [f, this]() {
+                this->updateMap();
+                f();
+                this->updateFile();
+            };
+
+            new_f();
+        }
 };
 
 int main()
