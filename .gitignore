@@ -7,6 +7,9 @@
 *.o
 *.obj
 
+# Additionl txt Files
+*.txt
+
 # Precompiled Headers
 *.gch
 *.pch
