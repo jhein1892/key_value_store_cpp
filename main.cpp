@@ -12,7 +12,6 @@ class KeyPair {
                 std::cout << "NULL VAL" << std::endl;
                 updateMap();
             } else {
-                // If we have a map provided, and we are provided with a file that already exists, then we should check if we want to update the existing on (append), or if we want to clear and redo the file
                 updateFile();
             }
         }
@@ -92,15 +91,64 @@ class KeyPair {
 
 int main()
 {
-    std::map<std::string, std::string> user_map;
-    user_map["Key1"] = "Val1";
-    user_map["Key2"] = "val2";
-    user_map["Key3"] = "val3";
+    using namespace std;
+    while(true){
+        // Are you wanting to open a new File, or update an existing file?
+        string response;
+        cout << "Are you wanting to open a new File or update and existing File? ";
+        cin >> response;
 
-    KeyPair newKeyPair("TestFile.txt", user_map);
-    KeyPair newKeyPair("TestFile.txt");
+        if(response == "new"){
+            string fileName;
+            map<string, string> user_map;
+            
+            cout << "Ok, so a new File then. What would you like to call it? ";
+            cin >> fileName;
+            cout << "Ok, lets start adding Key-Value Pairs" << endl;
+            while(true){
+                string keyName;
+                string value;
 
-    newKeyPair.addPair("Key4", "val4");
-    newKeyPair.editPair("Key1", "NewVal1");
-    newKeyPair.deletePair("Key3");
+                string addPair;
+
+                cout << "Key: ";
+                cin.ignore();
+                getline(cin, keyName);
+
+                cout << "Value: ";
+                cin.ignore();
+                getline(cin, value);
+
+                user_map[keyName] = value;
+                
+                cout << "Notha one?(y/n) ";
+                cin >> addPair;
+
+                if(addPair != "y"){
+                    break;
+                }
+            }
+            KeyPair newKeyPair(fileName, user_map);
+            break;
+        } else {
+            std::cout << "Ah, so an existing File" << std::endl;
+            break;
+        }
+
+    };
+
+    std::cout << "Thank you for using my Storage System" << std::endl;
+
+
+    // std::map<std::string, std::string> user_map;
+    // user_map["Key1"] = "Val1";
+    // user_map["Key2"] = "val2";
+    // user_map["Key3"] = "val3";
+
+    // KeyPair newKeyPair("TestFile.txt", user_map);
+    // KeyPair newKeyPair("TestFile.txt");
+
+    // newKeyPair.addPair("Key4", "val4");
+    // newKeyPair.editPair("Key1", "NewVal1");
+    // newKeyPair.deletePair("Key3");
 }
