@@ -6,9 +6,15 @@
 
 class KeyPair {
     public:
-        KeyPair(std::string filename, std::map<std::string, std::string>& my_map): filename(filename), map(my_map) 
+        KeyPair(std::string filename, const std::map<std::string, std::string>& my_map = std::map<std::string, std::string>{}): filename(filename), map(my_map)  
         {
-            updateFile();
+            if(map.empty()){
+                std::cout << "NULL VAL" << std::endl;
+                updateMap();
+            } else {
+                updateFile();
+            }
+            // Need to check if I'm working from an existing file, or need to create new one.
         }
 
         // Add new Pair value to the txt file
@@ -92,6 +98,7 @@ int main()
     user_map["Key3"] = "val3";
 
     KeyPair newKeyPair("TestFile.txt", user_map);
+    KeyPair newKeyPair("TestFile.txt");
 
     newKeyPair.addPair("Key4", "val4");
     newKeyPair.editPair("Key1", "NewVal1");
