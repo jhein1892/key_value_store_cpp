@@ -12,9 +12,9 @@ class KeyPair {
                 std::cout << "NULL VAL" << std::endl;
                 updateMap();
             } else {
+                // If we have a map provided, and we are provided with a file that already exists, then we should check if we want to update the existing on (append), or if we want to clear and redo the file
                 updateFile();
             }
-            // Need to check if I'm working from an existing file, or need to create new one.
         }
 
         // Add new Pair value to the txt file
