@@ -12,6 +12,7 @@ class KeyPair {
                 std::cout << "NULL VAL" << std::endl;
                 updateMap();
             } else {
+
                 updateFile();
             }
         }
@@ -22,6 +23,7 @@ class KeyPair {
                 try{
                     if(map.count(keyName) == 0){
                         map.insert(std::pair<std::string, std::string>(keyName, value));
+                        return 0;
                     } else {
                         throw (keyName);
                     }
@@ -59,12 +61,15 @@ class KeyPair {
                 try {
                     if(map.count(keyName) != 0){
                         map.erase(keyName);
+                        return 0;
                     } else {
                         throw (keyName);
                     }
                 } catch(std::string nullKey){
                     std::cout << "Sorry, there doesn't appear to be any keys called " << nullKey << std::endl;
+                    return 1;
                 }
+                return 0;
             };
             my_decorator(delete_function);
         }
@@ -118,16 +123,20 @@ class KeyPair {
         }
 };
 
-void getKey(std::string *keyName){      // Takes in Pointer
-    std::cout << "Key: ";
+void getValue(std::string *value, std::string title){
     std::cin.ignore();
-    std::getline(std::cin, *keyName);   // Dereference to assign to memory?
-};
-
-void getValue(std::string *value){  // Takes in Pointer
-    std::cout << "Value: ";
-    std::getline(std::cin, *value); // Dereferenes to assign to memory
-};
+    while(true){
+        std::string tempVal;
+        std::cout << title << ": ";
+        std::getline(std::cin, tempVal);
+        if(!tempVal.empty()){
+            *value = tempVal;
+            break;
+        } else {
+            std::cout << "Sorry, I can't insert a null " << title << " , please try again" << std::endl;
+        }
+    }
+}; 
 
 int main()
 {
@@ -151,8 +160,9 @@ int main()
             while(true){
                 string addPair;
 
-                getKey(&keyName);   // Pass in Address
-                getValue(&value);   // Pass in Address
+                // getKey(&keyName);   // Pass in Address
+                getValue(&keyName, "Key");   // Pass in Address
+                getValue(&value, "Value");   // Pass in Address
 
                 user_map[keyName] = value;
                 
@@ -175,15 +185,15 @@ int main()
                 string userDirection;
                 cin >> userDirection;
                 if (userDirection == "a"){
-                    getKey(&keyName);
-                    getValue(&value);
+                    getValue(&keyName, "Key");
+                    getValue(&value, "Value");
                     newKeyPair.addPair(keyName, value);
                 } else if (userDirection == "e"){
-                    getKey(&keyName);
-                    getValue(&value);
+                    getValue(&keyName, "Key");
+                    getValue(&value, "Value");
                     newKeyPair.editPair(keyName, value);
                 } else if (userDirection == "del"){
-                    getKey(&keyName);
+                    getValue(&keyName, "Key");
                     newKeyPair.deletePair(keyName);
                 } else if (userDirection == "q") {
                     break;
