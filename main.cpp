@@ -19,7 +19,17 @@ class KeyPair {
         // Add new Pair value to the txt file
         void addPair(std::string keyName, std::string value) {
             auto insert_function = [this, keyName, value]() {
-                return map.insert(std::pair<std::string, std::string>(keyName, value)).first;
+                try{
+                    if(map.count(keyName) == 0){
+                        map.insert(std::pair<std::string, std::string>(keyName, value));
+                    } else {
+                        throw (keyName);
+                    }
+                } catch(std::string duplicateKey){
+                    std::cout << "I'm sorry, there already exists a key with the name " << duplicateKey << std::endl;
+                    return 1;
+                }
+                return 0;
             };
             my_decorator(insert_function);
         }
@@ -27,7 +37,18 @@ class KeyPair {
         // Edit Pair of values in txt file
         void editPair(std::string keyName, std::string newValue){
             auto edit_function = [this, keyName, newValue](){
-                return map[keyName] = newValue;
+                try{
+                    if(map.count(keyName) != 0){
+                        map[keyName] = newValue;
+                    } else {
+                        throw (keyName);
+                    }
+                }
+                catch (std::string wrongKeyName) {
+                    std::cout << "I'm sorry, there doesn't appear to be a key called " << wrongKeyName << std::endl;
+                    return 1;
+                }
+                return 0;
             }; 
             my_decorator(edit_function);
         }
@@ -35,7 +56,15 @@ class KeyPair {
         // Delete Pair
         void deletePair(std::string keyName){
             auto delete_function = [this, keyName]() {
-                return map.erase(keyName);
+                try {
+                    if(map.count(keyName) != 0){
+                        map.erase(keyName);
+                    } else {
+                        throw (keyName);
+                    }
+                } catch(std::string nullKey){
+                    std::cout << "Sorry, there doesn't appear to be any keys called " << nullKey << std::endl;
+                }
             };
             my_decorator(delete_function);
         }
@@ -89,35 +118,41 @@ class KeyPair {
         }
 };
 
+void getKey(std::string *keyName){      // Takes in Pointer
+    std::cout << "Key: ";
+    std::cin.ignore();
+    std::getline(std::cin, *keyName);   // Dereference to assign to memory?
+};
+
+void getValue(std::string *value){  // Takes in Pointer
+    std::cout << "Value: ";
+    std::getline(std::cin, *value); // Dereferenes to assign to memory
+};
+
 int main()
 {
     using namespace std;
     while(true){
         // Are you wanting to open a new File, or update an existing file?
+        string keyName;
+        string value;
+
         string response;
         cout << "Are you wanting to open a new File or update and existing File? ";
         cin >> response;
+        string fileName;
 
         if(response == "new"){
-            string fileName;
             map<string, string> user_map;
             
             cout << "Ok, so a new File then. What would you like to call it? ";
             cin >> fileName;
             cout << "Ok, lets start adding Key-Value Pairs" << endl;
             while(true){
-                string keyName;
-                string value;
-
                 string addPair;
 
-                cout << "Key: ";
-                cin.ignore();
-                getline(cin, keyName);
-
-                cout << "Value: ";
-                cin.ignore();
-                getline(cin, value);
+                getKey(&keyName);   // Pass in Address
+                getValue(&value);   // Pass in Address
 
                 user_map[keyName] = value;
                 
@@ -131,24 +166,34 @@ int main()
             KeyPair newKeyPair(fileName, user_map);
             break;
         } else {
-            std::cout << "Ah, so an existing File" << std::endl;
+            cout << "Ah, so an existing File" << endl;
+            cout << "What's the name of the file? ";
+            cin >> fileName;
+            KeyPair newKeyPair(fileName);
+            while(true){
+                cout << "Would you like add a new pair ('a'), edit and existing pair ('e'), or remove a pair ('del')? ";
+                string userDirection;
+                cin >> userDirection;
+                if (userDirection == "a"){
+                    getKey(&keyName);
+                    getValue(&value);
+                    newKeyPair.addPair(keyName, value);
+                } else if (userDirection == "e"){
+                    getKey(&keyName);
+                    getValue(&value);
+                    newKeyPair.editPair(keyName, value);
+                } else if (userDirection == "del"){
+                    getKey(&keyName);
+                    newKeyPair.deletePair(keyName);
+                } else if (userDirection == "q") {
+                    break;
+                } else {
+                    cout << "Sorry, I don't recognize this direction. Please try again" << endl;
+                }
+            }
             break;
         }
-
     };
 
     std::cout << "Thank you for using my Storage System" << std::endl;
-
-
-    // std::map<std::string, std::string> user_map;
-    // user_map["Key1"] = "Val1";
-    // user_map["Key2"] = "val2";
-    // user_map["Key3"] = "val3";
-
-    // KeyPair newKeyPair("TestFile.txt", user_map);
-    // KeyPair newKeyPair("TestFile.txt");
-
-    // newKeyPair.addPair("Key4", "val4");
-    // newKeyPair.editPair("Key1", "NewVal1");
-    // newKeyPair.deletePair("Key3");
 }
